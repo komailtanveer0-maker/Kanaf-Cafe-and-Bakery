@@ -1,0 +1,6 @@
+{
+  "name": "Kanaf Cafe & Bakery",
+  "description": "Taste Crafted With Care. Freshly prepared café favourites, bakery treats and premium flavours in Chakwal, Pakistan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
