@@ -1,16 +1,23 @@
 import React from "react";
 import { KanafLogo } from "./KanafLogo";
 import { Phone, MapPin, Clock, Lock } from "lucide-react";
+import { CafeSettings } from "../types";
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
   onOpenStaffModal: () => void;
+  settings?: CafeSettings;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onNavigate,
   onOpenStaffModal,
+  settings,
 }) => {
+  const displayAddress = settings?.address || "Main Talagang Road, Chakwal, Pakistan";
+  const displayPhone = settings?.phone || "0543-692020";
+  const displayPhoneTel = settings?.internationalPhone || "+92543692020";
+  const displayHours = settings?.openingHours || "Daily: 11:00 AM – 12:00 Midnight";
   return (
     <footer className="bg-[#2D040E] text-[#FAF7F2] pt-16 pb-28 md:pb-12 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,20 +132,20 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="space-y-3 text-xs text-[#F5EFE6]/80">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#D7E7F2] flex-shrink-0 mt-0.5" />
-                <span>Main Talagang Road, Chakwal, Pakistan</span>
+                <span>{displayAddress}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#D7E7F2] flex-shrink-0" />
                 <a
-                  href="tel:0543692020"
+                  href={`tel:${displayPhoneTel.replace(/[^0-9+]/g, "")}`}
                   className="hover:text-white transition-colors"
                 >
-                  0543-692020
+                  {displayPhone}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-[#D7E7F2] flex-shrink-0" />
-                <span>Daily: 11:00 AM – 12:00 Midnight</span>
+                <span>{displayHours}</span>
               </div>
             </div>
           </div>

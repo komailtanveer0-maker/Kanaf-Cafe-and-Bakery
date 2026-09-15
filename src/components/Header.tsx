@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { KanafLogo } from "./KanafLogo";
 import { ShoppingBag, Menu as MenuIcon, X, Phone, Clock, Lock } from "lucide-react";
+import { CafeSettings } from "../types";
 
 interface HeaderProps {
   cartCount: number;
@@ -8,6 +9,7 @@ interface HeaderProps {
   onNavigate: (sectionId: string) => void;
   activeSection: string;
   onOpenStaff?: () => void;
+  settings?: CafeSettings;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,9 +18,15 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   activeSection,
   onOpenStaff,
+  settings,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const displayPhone = settings?.phone || "0543-692020";
+  const displayPhoneTel = settings?.internationalPhone || "+92543692020";
+  const displayHours = settings?.openingHours || "Open Daily: 11:00 AM – 12:00 AM";
+  const displayAddress = settings?.address || "Main Talagang Road, Chakwal";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,18 +66,18 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-[#D7E7F2]" />
-              Open Daily: 11:00 AM – 12:00 AM
+              {displayHours}
             </span>
             <span>•</span>
-            <span>Main Talagang Road, Chakwal</span>
+            <span>{displayAddress}</span>
           </div>
           <div className="flex items-center gap-4">
             <a
-              href="tel:0543692020"
+              href={`tel:${displayPhoneTel.replace(/[^0-9+]/g, "")}`}
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-[#D7E7F2]" />
-              0543-692020
+              {displayPhone}
             </a>
           </div>
         </div>
@@ -237,11 +245,11 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               <a
-                href="tel:0543692020"
+                href={`tel:${displayPhoneTel.replace(/[^0-9+]/g, "")}`}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#5C0D20]/30 text-[#5C0D20] font-semibold text-sm hover:bg-[#5C0D20]/5"
               >
                 <Phone className="w-4 h-4" />
-                <span>Call Kanaf: 0543-692020</span>
+                <span>Call Kanaf: {displayPhone}</span>
               </a>
 
               {onOpenStaff && (

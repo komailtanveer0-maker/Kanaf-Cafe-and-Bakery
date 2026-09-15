@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { MenuItem, Category, Order, GalleryItem, CafeSettings } from "../types";
 import { formatPrice } from "../utils/whatsapp";
+import { dataStore } from "../utils/dataStore";
 import {
   Plus,
   Edit2,
@@ -26,6 +27,10 @@ import {
   Key,
   Camera,
   Banknote,
+  Download,
+  RefreshCw,
+  FileDown,
+  FileUp,
 } from "lucide-react";
 
 interface StaffDashboardProps {
@@ -109,20 +114,70 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
   });
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
+  // Sync settingsForm if settings prop changes
+  React.useEffect(() => {
+    setSettingsForm((prev) => ({
+      ...prev,
+      phone: settings.phone,
+      address: settings.address,
+      aryWhatsApp: settings.aryWhatsApp,
+      openingHours: settings.openingHours,
+    }));
+  }, [settings]);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const galleryFileInputRef = useRef<HTMLInputElement | null>(null);
+  const backupFileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Handle Export Backup
+  const handleExportBackup = () => {
+    try {
+      const dataStr = dataStore.exportAllData();
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `kanaf_live_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setStatusMessage("Live data backup downloaded successfully!");
+    } catch (err: any) {
+      setStatusMessage("Failed to export backup: " + err.message);
+    }
+  };
+
+  // Handle Import Backup
+  const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result as string;
+        const res = dataStore.importAllData(text);
+        if (res.success) {
+          setStatusMessage("Data restored & synced successfully! All screens updated.");
+          onRefreshMenu();
+        } else {
+          setStatusMessage("Import failed: " + res.error);
+        }
+      } catch (err: any) {
+        setStatusMessage("Error reading file: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    if (e.target) e.target.value = "";
+  };
 
   // Load orders when orders tab is clicked
   const loadOrders = async () => {
     setOrdersLoading(true);
     try {
-      const res = await fetch("/api/orders", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setOrders(data);
-      }
+      const data = await dataStore.getOrders(token);
+      setOrders(data);
     } catch (err) {
       console.error("Error loading orders:", err);
     } finally {
@@ -143,17 +198,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
   // Quick toggle availability
   const toggleAvailability = async (item: MenuItem) => {
     try {
-      const res = await fetch(`/api/menu/item/${item.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ available: !item.available }),
-      });
-      if (res.ok) {
-        onRefreshMenu();
-      }
+      await dataStore.toggleAvailability(item.id, !item.available, token);
+      onRefreshMenu();
     } catch (err) {
       console.error("Error toggling item availability:", err);
     }
@@ -162,17 +208,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
   // Quick toggle featured
   const toggleFeatured = async (item: MenuItem) => {
     try {
-      const res = await fetch(`/api/menu/item/${item.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ featured: !item.featured }),
-      });
-      if (res.ok) {
-        onRefreshMenu();
-      }
+      await dataStore.toggleFeatured(item.id, !item.featured, token);
+      onRefreshMenu();
     } catch (err) {
       console.error("Error toggling featured:", err);
     }
@@ -184,13 +221,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
       return;
     }
     try {
-      const res = await fetch(`/api/menu/item/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        onRefreshMenu();
-      }
+      await dataStore.deleteMenuItem(id, token);
+      onRefreshMenu();
     } catch (err) {
       console.error("Error deleting item:", err);
     }
@@ -207,23 +239,12 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
 
     setSavingPriceId(itemId);
     try {
-      const res = await fetch(`/api/menu/item/${itemId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ price: priceNum }),
-      });
-      if (res.ok) {
-        setEditingPriceId(null);
-        onRefreshMenu();
-      } else {
-        alert("Failed to update price.");
-      }
+      await dataStore.quickUpdatePrice(itemId, priceNum, token);
+      setEditingPriceId(null);
+      onRefreshMenu();
     } catch (err) {
       console.error("Error updating price:", err);
-      alert("Error communicating with server.");
+      alert("Failed to update price.");
     } finally {
       setSavingPriceId(null);
     }
@@ -273,21 +294,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
       setImagePreview(base64);
 
       try {
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ image: base64, name: file.name }),
-        });
-        const data = await res.json();
-        if (res.ok && data.url) {
-          setItemForm((prev) => ({ ...prev, image: data.url }));
-        } else {
-          // Fallback to base64 preview
-          setItemForm((prev) => ({ ...prev, image: base64 }));
-        }
+        const imageUrl = await dataStore.uploadImage(base64, file.name, token);
+        setItemForm((prev) => ({ ...prev, image: imageUrl }));
       } catch (err) {
         setItemForm((prev) => ({ ...prev, image: base64 }));
       } finally {
@@ -313,31 +321,12 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
         image: itemForm.image,
       };
 
-      let res;
-      if (editingItem) {
-        res = await fetch(`/api/menu/item/${editingItem.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        });
-      } else {
-        res = await fetch("/api/menu/item", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      if (res.ok) {
-        setItemModalOpen(false);
-        onRefreshMenu();
-      }
+      await dataStore.saveMenuItem(
+        editingItem ? { ...payload, id: editingItem.id } : payload,
+        token
+      );
+      setItemModalOpen(false);
+      onRefreshMenu();
     } catch (err) {
       console.error("Error saving menu item:", err);
     }
@@ -349,19 +338,10 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
     if (!categoryForm.name.trim()) return;
 
     try {
-      const res = await fetch("/api/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(categoryForm),
-      });
-      if (res.ok) {
-        setCategoryModalOpen(false);
-        setCategoryForm({ name: "", icon: "UtensilsCrossed", description: "" });
-        onRefreshMenu();
-      }
+      await dataStore.saveCategory(categoryForm, token);
+      setCategoryModalOpen(false);
+      setCategoryForm({ name: "", icon: "UtensilsCrossed", description: "" });
+      onRefreshMenu();
     } catch (err) {
       console.error("Error creating category:", err);
     }
@@ -373,13 +353,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
       return;
     }
     try {
-      const res = await fetch(`/api/categories/${catId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        onRefreshMenu();
-      }
+      await dataStore.deleteCategory(catId, token);
+      onRefreshMenu();
     } catch (err) {
       console.error("Error deleting category:", err);
     }
@@ -388,17 +363,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
   // Update Order Status
   const handleUpdateOrderStatus = async (orderId: string, status: string) => {
     try {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-      if (res.ok) {
-        loadOrders();
-      }
+      await dataStore.updateOrderStatus(orderId, status as any, token);
+      loadOrders();
     } catch (err) {
       console.error("Error updating order status:", err);
     }
@@ -411,42 +377,32 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
 
     try {
       // 1. Update basic settings
-      await fetch("/api/settings", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+      await dataStore.saveSettings(
+        {
           phone: settingsForm.phone,
           address: settingsForm.address,
           aryWhatsApp: settingsForm.aryWhatsApp,
           openingHours: settingsForm.openingHours,
-        }),
-      });
+        },
+        token
+      );
 
       // 2. If new PIN provided, change PIN
       if (settingsForm.newPin.trim()) {
-        const pinRes = await fetch("/api/staff/change-pin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            currentPin: settingsForm.currentPin,
-            newPin: settingsForm.newPin,
-          }),
-        });
-        const pinData = await pinRes.json();
-        if (!pinRes.ok) {
-          setStatusMessage(`Settings saved, but PIN change failed: ${pinData.error}`);
+        const pinRes = await dataStore.changeStaffPin(
+          settingsForm.currentPin,
+          settingsForm.newPin,
+          token
+        );
+        if (!pinRes.success) {
+          setStatusMessage(`Settings saved, but PIN change failed: ${pinRes.error}`);
           return;
         }
       }
 
       setStatusMessage("Settings updated successfully!");
       setSettingsForm((prev) => ({ ...prev, currentPin: "", newPin: "" }));
+      onRefreshMenu();
     } catch (err: any) {
       setStatusMessage("Error saving settings: " + err.message);
     }
@@ -1073,10 +1029,7 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                     <button
                       onClick={async () => {
                         if (window.confirm("Delete photo?")) {
-                          await fetch(`/api/gallery/${item.id}`, {
-                            method: "DELETE",
-                            headers: { Authorization: `Bearer ${token}` },
-                          });
+                          await dataStore.deleteGalleryPhoto(item.id, token);
                           onRefreshMenu();
                         }
                       }}
@@ -1208,6 +1161,79 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                   </button>
                 </div>
               </form>
+
+              {/* Delivery Policy & Live Sync Status Card */}
+              <div className="mt-8 pt-6 border-t border-gray-100 space-y-4">
+                <div className="p-4 rounded-2xl bg-[#5C0D20]/5 border border-[#5C0D20]/15 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#4A0817] uppercase tracking-wider">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Active Delivery Policy: 100% Free Delivery</span>
+                  </div>
+                  <p className="text-[11px] text-[#615A56] leading-relaxed">
+                    Delivery charges are permanently set to <strong>0 PKR</strong>. Customers will see "FREE Delivery" across the storefront, cart drawer, checkout modal, and in WhatsApp order dispatch messages.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-amber-900 uppercase tracking-wider">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span>Instant Live Updates (Any Platform / Vercel)</span>
+                  </div>
+                  <p className="text-[11px] text-[#615A56] leading-relaxed">
+                    Any new recipe added, price adjustment, or number updated in this dashboard updates immediately on the live website across customer devices without server delays.
+                  </p>
+                </div>
+
+                {/* Data Backup, Export & Multi-Device Sync */}
+                <div className="p-4 rounded-2xl bg-white border border-[#5C0D20]/15 space-y-3">
+                  <h4 className="font-bold text-[#4A0817] uppercase tracking-wider text-xs flex items-center gap-1.5">
+                    <FileDown className="w-4 h-4 text-[#8F1F39]" />
+                    <span>Data Backup & Multi-Device Transfer</span>
+                  </h4>
+                  <p className="text-[11px] text-[#615A56] leading-relaxed">
+                    Download a full JSON backup of all recipes, custom prices, categories, and settings. You can import this file to restore or transfer your exact menu to any computer or browser at any time.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleExportBackup}
+                      className="px-4 py-2 rounded-xl bg-white border border-[#5C0D20]/30 hover:bg-[#5C0D20]/5 text-[#4A0817] text-xs font-semibold flex items-center gap-2 shadow-sm transition-all"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Menu & Settings Backup (.json)</span>
+                    </button>
+
+                    <input
+                      type="file"
+                      ref={backupFileInputRef}
+                      accept=".json,application/json"
+                      onChange={handleImportBackup}
+                      className="hidden"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => backupFileInputRef.current?.click()}
+                      className="px-4 py-2 rounded-xl bg-white border border-[#5C0D20]/30 hover:bg-[#5C0D20]/5 text-[#4A0817] text-xs font-semibold flex items-center gap-2 shadow-sm transition-all"
+                    >
+                      <FileUp className="w-3.5 h-3.5" />
+                      <span>Restore from Backup File</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onRefreshMenu();
+                        setStatusMessage("Synchronized all menu items and settings across application!");
+                      }}
+                      className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Force Sync All Devices</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </main>
@@ -1487,14 +1513,7 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
               onSubmit={async (e) => {
                 e.preventDefault();
                 if (!galleryForm.image) return;
-                await fetch("/api/gallery", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify(galleryForm),
-                });
+                await dataStore.addGalleryPhoto(galleryForm, token);
                 setGalleryModalOpen(false);
                 setGalleryForm({
                   title: "",

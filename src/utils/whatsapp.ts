@@ -9,14 +9,24 @@ export function formatPrice(amount: number): string {
   return `Rs. ${amount.toLocaleString("en-PK")}`;
 }
 
+export function normalizeWhatsAppNumber(phone?: string): string {
+  if (!phone) return ARY_SERVICES_PHONE_INTL;
+  const digits = phone.replace(/[^0-9]/g, "");
+  if (digits.startsWith("92")) return digits;
+  if (digits.startsWith("0")) return "92" + digits.slice(1);
+  if (digits.length === 10) return "92" + digits;
+  return digits || ARY_SERVICES_PHONE_INTL;
+}
+
 export function generateWhatsAppOrderUrl(
   items: CartItem[],
   checkout: CheckoutFormData,
-  deliveryFee: number = 0,
-  orderNumber?: string
+  _deliveryFee: number = 0,
+  orderNumber?: string,
+  targetPhone?: string
 ): string {
   const subtotal = items.reduce((sum, ci) => sum + ci.item.price * ci.quantity, 0);
-  const total = subtotal + deliveryFee;
+  const total = subtotal; // 100% Free Delivery, no delivery charges
 
   const itemLines = items
     .map(
@@ -30,7 +40,7 @@ export function generateWhatsAppOrderUrl(
     `*NEW ORDER — KANAF CAFE & BAKERY*`,
     orderNumber ? `*Order Ref:* #${orderNumber}` : `*Date:* ${new Date().toLocaleDateString("en-PK")}`,
     `--------------------------------`,
-    `*Addressed to:* ARY SERVICES`,
+    `*Addressed to:* ARY SERVICES / ORDER DESK`,
     `--------------------------------`,
     `*CUSTOMER DETAILS:*`,
     `• *Name:* ${checkout.customerName}`,
@@ -42,7 +52,7 @@ export function generateWhatsAppOrderUrl(
     itemLines,
     `--------------------------------`,
     `*Subtotal:* ${formatPrice(subtotal)}`,
-    deliveryFee > 0 ? `*Delivery Fee:* ${formatPrice(deliveryFee)}` : null,
+    `*Delivery:* FREE (No Delivery Charges)`,
     `*TOTAL AMOUNT:* ${formatPrice(total)}`,
     `--------------------------------`,
     checkout.notes ? `*Order Notes / Instructions:*\n${checkout.notes}\n--------------------------------` : null,
@@ -51,6 +61,7 @@ export function generateWhatsAppOrderUrl(
     .filter(Boolean)
     .join("\n");
 
+  const intlNumber = normalizeWhatsAppNumber(targetPhone);
   const encoded = encodeURIComponent(message);
-  return `https://wa.me/${ARY_SERVICES_PHONE_INTL}?text=${encoded}`;
+  return `https://wa.me/${intlNumber}?text=${encoded}`;
 }

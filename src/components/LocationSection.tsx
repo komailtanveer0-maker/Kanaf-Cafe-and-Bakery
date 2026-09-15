@@ -1,7 +1,17 @@
 import React from "react";
 import { MapPin, Phone, Clock, Navigation, ExternalLink } from "lucide-react";
+import { CafeSettings } from "../types";
 
-export const LocationSection: React.FC = () => {
+interface LocationSectionProps {
+  settings?: CafeSettings;
+}
+
+export const LocationSection: React.FC<LocationSectionProps> = ({ settings }) => {
+  const displayAddress = settings?.address || "Main Talagang Road, Chakwal, Pakistan";
+  const displayPhone = settings?.phone || "0543-692020";
+  const displayPhoneTel = settings?.internationalPhone || "+92543692020";
+  const displayHours = settings?.openingHours || "11:00 AM – 12:00 Midnight";
+
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=WRJJ%2BPQP%2C+Talagang+Hwy%2C+Chakwal%2C+Pakistan";
 
   return (
@@ -20,7 +30,7 @@ export const LocationSection: React.FC = () => {
             </h2>
 
             <p className="text-base text-[#615A56] leading-relaxed mb-8">
-              Centrally located on Main Talagang Road, Chakwal. Stop by for dining, takeaway, or call ahead to have your favorite food ready for pickup.
+              Centrally located on {displayAddress}. Stop by for dining, takeaway, or call ahead to have your favorite food ready for pickup.
             </p>
 
             <div className="space-y-6">
@@ -34,7 +44,7 @@ export const LocationSection: React.FC = () => {
                     Address
                   </span>
                   <p className="text-sm font-semibold text-[#2D2522] mt-0.5">
-                    Main Talagang Road, Chakwal, Pakistan
+                    {displayAddress}
                   </p>
                   <p className="text-xs text-gray-500 mt-0.5">
                     Plus Code: WRJJ+PQP, Talagang Hwy
@@ -52,10 +62,10 @@ export const LocationSection: React.FC = () => {
                     Direct Cafe Phone
                   </span>
                   <a
-                    href="tel:0543692020"
+                    href={`tel:${displayPhoneTel.replace(/[^0-9+]/g, "")}`}
                     className="text-base font-bold text-[#4A0817] hover:text-[#8F1F39] transition-colors mt-0.5 inline-block"
                   >
-                    0543-692020
+                    {displayPhone}
                   </a>
                   <p className="text-xs text-gray-500 mt-0.5">
                     Call for reservations, takeaway & catering inquiries
@@ -73,7 +83,7 @@ export const LocationSection: React.FC = () => {
                     Opening Hours
                   </span>
                   <p className="text-sm font-semibold text-[#2D2522] mt-0.5">
-                    11:00 AM – 12:00 Midnight
+                    {displayHours}
                   </p>
                   <p className="text-xs text-emerald-700 font-medium mt-0.5">
                     Open 7 Days a Week

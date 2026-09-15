@@ -97,11 +97,30 @@ git push -u origin main
 
 ---
 
+## Deploying on Vercel (vercel.com)
+
+This repository is pre-configured for 1-click zero-config deployment on **Vercel**:
+
+1. **Import the repository into Vercel**:
+   - Go to [vercel.com/new](https://vercel.com/new).
+   - Select your GitHub repository (`kanaf-cafe-bakery`).
+2. **Project Settings**:
+   - **Framework Preset**: `Vite` (automatically detected via `vercel.json`)
+   - **Build Command**: `vite build` (or `npm run build:client`)
+   - **Output Directory**: `dist`
+   - **Install Command**: `npm install`
+3. Click **Deploy**!
+   - Your site will be live on your custom `.vercel.app` URL with full SSL and global CDN.
+   - The WhatsApp order integration to **ARY Services** (`0333 6554090`) works seamlessly on Vercel out of the box.
+
+---
+
 ## Free Cloud Deployment Options
 
-- **Render / Railway / Fly.io**:
+- **Vercel (Recommended for frontend)**:
+  - Framework: `Vite`
+  - Output: `dist`
+- **Render / Railway / Fly.io (For persistent server backend)**:
   - Build command: `npm run build`
   - Start command: `npm start`
   - Port: `3000`
-- **Vercel / Netlify**:
-  - Can be hosted with a simple serverless adapter or static build.

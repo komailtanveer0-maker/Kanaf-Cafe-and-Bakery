@@ -1,0 +1,718 @@
+{
+  "categories": [
+    { "id": "bakery", "name": "Bakery", "icon": "Croissant", "description": "Freshly baked artisan treats, cakes & pastries" },
+    { "id": "paninis", "name": "Paninis & Sandwiches", "icon": "Sandwich", "description": "Perfectly grilled & loaded with rich cheesy goodness" },
+    { "id": "burgers", "name": "Burgers", "icon": "Beef", "description": "Juicy grilled patties & signature crispy fillets" },
+    { "id": "chicken", "name": "Chicken", "icon": "Drumstick", "description": "Golden crispy coating, fresh & juicy with signature sauces" },
+    { "id": "pasta", "name": "Pasta", "icon": "UtensilsCrossed", "description": "Creamy authentic pastas baked with mozzarella" },
+    { "id": "fries", "name": "Fries & Sides", "icon": "Flame", "description": "Crispy golden sides, loaded options & garlic breads" },
+    { "id": "pizza", "name": "Pizza", "icon": "Pizza", "description": "Stone-baked crusts with rich mozzarella & premium toppings" },
+    { "id": "hot-coffee", "name": "Hot Coffee", "icon": "Coffee", "description": "Rich freshly brewed specialty espresso & latte creations" },
+    { "id": "cold-coffee", "name": "Cold Coffee", "icon": "CupSoda", "description": "Chilled artisan espresso, frappes & iced specials" },
+    { "id": "tea", "name": "Tea", "icon": "Sparkles", "description": "Karak chai, aromatic green & calming herbal blends" },
+    { "id": "cold-drinks", "name": "Cold Drinks", "icon": "Wine", "description": "Refreshing mojitos, freshly squeezed limes & coolers" },
+    { "id": "desserts", "name": "Desserts", "icon": "Cake", "description": "Velvety cheesecakes, warm fudge brownies & sundaes" }
+  ],
+  "items": [
+    {
+      "id": "item-panini-1",
+      "name": "Chicken Panini",
+      "category": "paninis",
+      "description": "Crispy grilled artisan panini packed with seasoned chicken breast, melted mozzarella and signature sauce.",
+      "price": 690,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_panini_poster.jpg"
+    },
+    {
+      "id": "item-panini-2",
+      "name": "Grilled Chicken Panini",
+      "category": "paninis",
+      "description": "Herb-marinated sliced chicken breast, grilled bell peppers, melted cheddar and herb mayo.",
+      "price": 740,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_panini_poster.jpg"
+    },
+    {
+      "id": "item-panini-3",
+      "name": "Cheese Panini",
+      "category": "paninis",
+      "description": "Triple melted cheese blend with aromatic herbs toasted between golden grill marks.",
+      "price": 620,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_panini_poster.jpg"
+    },
+    {
+      "id": "item-panini-4",
+      "name": "Club Sandwich",
+      "category": "paninis",
+      "description": "Triple-decker toasted bread with egg, roast chicken, cheese slices, lettuce and tomato.",
+      "price": 650,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_panini_poster.jpg"
+    },
+    {
+      "id": "item-panini-5",
+      "name": "Chicken Sandwich",
+      "category": "paninis",
+      "description": "Tender shredded chicken mixed with house-made creamy garlic mayo and crisp greens.",
+      "price": 580,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_panini_poster.jpg"
+    },
+    {
+      "id": "item-panini-6",
+      "name": "Grilled Sandwich",
+      "category": "paninis",
+      "description": "Classic butter-toasted sandwich loaded with spiced chicken mince and cheese.",
+      "price": 620,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_panini_poster.jpg"
+    },
+    {
+      "id": "item-chk-1",
+      "name": "Crispy Chicken",
+      "category": "chicken",
+      "description": "Extra crispy coating, fresh & juicy chicken, perfectly seasoned, served with creamy signature sauce.",
+      "price": 790,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-chk-2",
+      "name": "Chicken Wings",
+      "category": "chicken",
+      "description": "Crispy tossed chicken wings glazed with creamy white pepper sauce & fresh seasoning.",
+      "price": 650,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-chk-3",
+      "name": "Chicken Strips",
+      "category": "chicken",
+      "description": "Tender boneless chicken fillets fried to golden perfection with honey mustard dip.",
+      "price": 690,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-chk-4",
+      "name": "Loaded Chicken",
+      "category": "chicken",
+      "description": "Crispy chicken bites smothered in melted cheddar cheese, jalapenos and house ranch.",
+      "price": 890,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-coffee-1",
+      "name": "Latte",
+      "category": "hot-coffee",
+      "description": "Freshly brewed velvety espresso with steamed milk and delicate artisan latte art.",
+      "price": 520,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coffee-2",
+      "name": "Espresso",
+      "category": "hot-coffee",
+      "description": "Intense rich double shot of pure Arabica blend with thick hazelnut crema.",
+      "price": 340,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coffee-3",
+      "name": "Americano",
+      "category": "hot-coffee",
+      "description": "Hot water poured over double espresso shots for a smooth, deep aromatic profile.",
+      "price": 380,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coffee-4",
+      "name": "Cappuccino",
+      "category": "hot-coffee",
+      "description": "Balanced ratio of rich espresso, steamed whole milk, and dense silky microfoam.",
+      "price": 480,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coffee-5",
+      "name": "Flat White",
+      "category": "hot-coffee",
+      "description": "Bold ristretto shots blended seamlessly with velvety micro-foamed milk.",
+      "price": 520,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coffee-6",
+      "name": "Mocha",
+      "category": "hot-coffee",
+      "description": "Rich espresso combined with premium Dutch chocolate sauce and steamed milk.",
+      "price": 560,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coffee-7",
+      "name": "Caramel Latte",
+      "category": "hot-coffee",
+      "description": "Smooth espresso and steamed milk infused with golden French caramel syrup.",
+      "price": 580,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coldcoffee-1",
+      "name": "Iced Americano",
+      "category": "cold-coffee",
+      "description": "Double espresso poured over crystal ice and chilled mountain water.",
+      "price": 420,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coldcoffee-2",
+      "name": "Iced Latte",
+      "category": "cold-coffee",
+      "description": "Smooth espresso layered over chilled fresh milk and served over ice.",
+      "price": 540,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coldcoffee-3",
+      "name": "Iced Mocha",
+      "category": "cold-coffee",
+      "description": "Decadent dark chocolate, bold espresso, chilled milk, topped with light foam.",
+      "price": 580,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coldcoffee-4",
+      "name": "Caramel Iced Coffee",
+      "category": "cold-coffee",
+      "description": "Sweet caramel swirl shaken with rich espresso and cold milk on the rocks.",
+      "price": 620,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-coldcoffee-5",
+      "name": "Kanaf Special Cold Coffee",
+      "category": "cold-coffee",
+      "description": "Our chef's signature creamy blended frappe with double espresso and hazelnut crunch.",
+      "price": 680,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-bakery-1",
+      "name": "Croissants",
+      "category": "bakery",
+      "description": "Golden, flaky, buttery Parisian-style pastry baked fresh every morning.",
+      "price": 290,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-2",
+      "name": "Chocolate Croissants",
+      "category": "bakery",
+      "description": "Flaky buttery croissant rolled with double batons of imported dark chocolate.",
+      "price": 380,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-3",
+      "name": "Muffins",
+      "category": "bakery",
+      "description": "Moist, oven-fresh blueberry and vanilla crumb muffins with tender crumb.",
+      "price": 240,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-4",
+      "name": "Cupcakes",
+      "category": "bakery",
+      "description": "Delicate sponge cupcakes piped with gourmet butter cream frosting.",
+      "price": 220,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-5",
+      "name": "Brownies",
+      "category": "bakery",
+      "description": "Rich, dense Belgian chocolate fudge brownie with a crackly paper-thin top.",
+      "price": 280,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-6",
+      "name": "Cookies",
+      "category": "bakery",
+      "description": "Freshly baked chewy chocolate chip and double chocolate chunk cookies.",
+      "price": 180,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-7",
+      "name": "Doughnuts",
+      "category": "bakery",
+      "description": "Soft glazed and Nutella-filled artisan donuts dusted with powdered sugar.",
+      "price": 220,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-8",
+      "name": "Cinnamon Rolls",
+      "category": "bakery",
+      "description": "Swirled warm brioche roll packed with Korintje cinnamon and cream cheese glaze.",
+      "price": 360,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-9",
+      "name": "Pastries",
+      "category": "bakery",
+      "description": "Assorted fresh fruit and chocolate layered cream pastries.",
+      "price": 320,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-10",
+      "name": "Cakes",
+      "category": "bakery",
+      "description": "Whole celebratory artisan cakes crafted with the highest quality ingredients.",
+      "price": 1600,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-11",
+      "name": "Cheesecake",
+      "category": "bakery",
+      "description": "Creamy New York style baked cheesecake on a golden graham crust.",
+      "price": 490,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-12",
+      "name": "Chocolate Cake",
+      "category": "bakery",
+      "description": "Decadent multi-layer dark chocolate fudge cake with silky ganache frosting.",
+      "price": 1850,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-13",
+      "name": "Red Velvet Cake",
+      "category": "bakery",
+      "description": "Classic crimson buttermilk sponge with real cream cheese frosting.",
+      "price": 1950,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-14",
+      "name": "Fresh Bread",
+      "category": "bakery",
+      "description": "Loaf of artisanal white and multigrain bread baked fresh daily.",
+      "price": 210,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-bakery-15",
+      "name": "Buns",
+      "category": "bakery",
+      "description": "Pillow-soft milk buns and burger buns topped with toasted sesame.",
+      "price": 120,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-burger-1",
+      "name": "Crispy Chicken Burger",
+      "category": "burgers",
+      "description": "Golden fried chicken thigh, crunchy iceberg lettuce, melted cheese & house sauce.",
+      "price": 590,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-burger-2",
+      "name": "Grilled Chicken Burger",
+      "category": "burgers",
+      "description": "Smoky char-grilled chicken breast, caramelized onions, honey mustard & cheddar.",
+      "price": 640,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-burger-3",
+      "name": "Cheese Burger",
+      "category": "burgers",
+      "description": "Juicy patty loaded with double American cheese slices, gherkins and burger relish.",
+      "price": 540,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-burger-4",
+      "name": "Zinger Burger",
+      "category": "burgers",
+      "description": "Spicy batter-dipped fried chicken fillet, spicy mayo, crisp shredded lettuce in brioche.",
+      "price": 590,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_crispy_chicken.jpg"
+    },
+    {
+      "id": "item-pasta-1",
+      "name": "Alfredo Pasta",
+      "category": "pasta",
+      "description": "Fettuccine pasta tossed in velvety garlic parmesan cream sauce with sauteed mushrooms.",
+      "price": 780,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pasta-2",
+      "name": "Creamy Chicken Pasta",
+      "category": "pasta",
+      "description": "Penne pasta with grilled chicken strips, sun-dried tomatoes in a rich cream reduction.",
+      "price": 840,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pasta-3",
+      "name": "Arrabbiata Pasta",
+      "category": "pasta",
+      "description": "Fiery San Marzano tomato sauce infused with chili flakes, fresh basil, garlic and olives.",
+      "price": 720,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pasta-4",
+      "name": "Special Kanaf Pasta",
+      "category": "pasta",
+      "description": "Chef's signature oven-baked pasta with chicken chunks, black olives, bell peppers & golden melted mozzarella.",
+      "price": 920,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-fries-1",
+      "name": "French Fries",
+      "category": "fries",
+      "description": "Hot and crisp straight-cut golden potatoes seasoned with sea salt.",
+      "price": 320,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-fries-2",
+      "name": "Loaded Fries",
+      "category": "fries",
+      "description": "Crispy fries smothered with melted cheese, chicken bits, sliced olives, jalapenos and creamy garlic drizzle.",
+      "price": 580,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-fries-3",
+      "name": "Cheese Fries",
+      "category": "fries",
+      "description": "Crispy golden french fries drenched in rich hot cheddar cheese sauce.",
+      "price": 490,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-fries-4",
+      "name": "Garlic Bread",
+      "category": "fries",
+      "description": "Baguette slices toasted with aromatic roasted garlic butter, parsley and parmesan.",
+      "price": 340,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-fries-5",
+      "name": "Potato Wedges",
+      "category": "fries",
+      "description": "Seasoned skin-on thick potato wedges served hot with smoky barbecue dip.",
+      "price": 380,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pizza-1",
+      "name": "Margherita",
+      "category": "pizza",
+      "description": "Classic Italian tomato sauce, whole fresh mozzarella, aromatic basil & extra virgin olive oil.",
+      "price": 890,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pizza-2",
+      "name": "Chicken Tikka",
+      "category": "pizza",
+      "description": "Spiced chicken tikka cubes, red onions, bell peppers, mozzarella and fresh cilantro.",
+      "price": 1190,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pizza-3",
+      "name": "Fajita",
+      "category": "pizza",
+      "description": "Mexican-style fajita chicken, sweet peppers, sweet corn and jalapenos over melted cheese.",
+      "price": 1250,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pizza-4",
+      "name": "Pepperoni",
+      "category": "pizza",
+      "description": "Generous layers of premium beef pepperoni and mozzarella on tangy marinara base.",
+      "price": 1290,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-pizza-5",
+      "name": "Kanaf Special Pizza",
+      "category": "pizza",
+      "description": "Ultimate specialty pizza with mixed meats, black olives, mushrooms, bell peppers and stuffed cheese crust.",
+      "price": 1450,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_hero_cinematic.jpg"
+    },
+    {
+      "id": "item-tea-1",
+      "name": "Regular Tea",
+      "category": "tea",
+      "description": "Freshly brewed hot milk tea made with aromatic black tea leaves.",
+      "price": 180,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-tea-2",
+      "name": "Green Tea",
+      "category": "tea",
+      "description": "Light, antioxidant-rich brewed green tea with green cardamom and lemon slice.",
+      "price": 160,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-tea-3",
+      "name": "Karak Tea",
+      "category": "tea",
+      "description": "Rich, deeply simmered kadak tea infused with crushed cardamom and saffron touch.",
+      "price": 220,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-tea-4",
+      "name": "Herbal Tea",
+      "category": "tea",
+      "description": "Caffeine-free soothing chamomile, peppermint and wild honey infusion.",
+      "price": 240,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-colddrink-1",
+      "name": "Fresh Lime",
+      "category": "cold-drinks",
+      "description": "Refreshing freshly squeezed lime with soda or chilled water, mint and salt/sweet touch.",
+      "price": 260,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-colddrink-2",
+      "name": "Lemonade",
+      "category": "cold-drinks",
+      "description": "Iced natural lemonade with lemon wheels and sprig of fresh garden mint.",
+      "price": 290,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-colddrink-3",
+      "name": "Mojito",
+      "category": "cold-drinks",
+      "description": "Crushed mint leaves, lime wedges, simple syrup and sparkling soda over crushed ice.",
+      "price": 380,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-colddrink-4",
+      "name": "Peach Drink",
+      "category": "cold-drinks",
+      "description": "Sweet fragrant peach pulp blended with crushed ice and sparkling citrus.",
+      "price": 360,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-colddrink-5",
+      "name": "Soft Drinks",
+      "category": "cold-drinks",
+      "description": "Chilled can of Coke, Sprite, Fanta, Diet Coke or 7Up.",
+      "price": 150,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-colddrink-6",
+      "name": "Mineral Water",
+      "category": "cold-drinks",
+      "description": "Pure premium bottled mineral water (500ml / 1.5L).",
+      "price": 100,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_coffee_poster.jpg"
+    },
+    {
+      "id": "item-dessert-1",
+      "name": "Cheesecake",
+      "category": "desserts",
+      "description": "Classic silky smooth Philadelphia cheesecake with blueberry or strawberry compote.",
+      "price": 490,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-dessert-2",
+      "name": "Brownie",
+      "category": "desserts",
+      "description": "Warm gooey fudge brownie with toasted walnuts and chocolate drizzle.",
+      "price": 280,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-dessert-3",
+      "name": "Brownie with Ice Cream",
+      "category": "desserts",
+      "description": "Sizzling warm fudge brownie crowned with a scoop of French vanilla bean ice cream.",
+      "price": 390,
+      "available": true,
+      "featured": true,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-dessert-4",
+      "name": "Chocolate Dessert",
+      "category": "desserts",
+      "description": "Molten chocolate lava cup with melted chocolate center oozing with every bite.",
+      "price": 450,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    },
+    {
+      "id": "item-dessert-5",
+      "name": "Sundae",
+      "category": "desserts",
+      "description": "Three scoops of gourmet ice cream, hot chocolate fudge, roasted almonds and maraschino cherry.",
+      "price": 480,
+      "available": true,
+      "featured": false,
+      "image": "/assets/kanaf_cafe_interior.jpg"
+    }
+  ]
+}

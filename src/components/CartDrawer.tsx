@@ -175,13 +175,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery in Chakwal</span>
-                  <span className="font-semibold text-emerald-700">
-                    {subtotal >= 1000 ? "FREE" : "Rs. 100"}
+                  <span className="font-semibold text-emerald-700 uppercase tracking-wider font-bold">
+                    FREE DELIVERY
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-serif font-bold text-[#4A0817] pt-2 border-t">
-                  <span>Estimated Total</span>
-                  <span>{formatPrice(subtotal + (subtotal >= 1000 ? 0 : 100))}</span>
+                  <span>Total</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
               </div>
 

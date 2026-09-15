@@ -18,25 +18,15 @@ import { MobileActionBar } from "./components/MobileActionBar";
 import { StaffModal } from "./components/StaffModal";
 import { StaffDashboard } from "./components/StaffDashboard";
 import { CheckCircle2, ShoppingBag } from "lucide-react";
+import { initialCategories, initialMenuItems, initialGallery, initialSettings } from "./data/fallbackData";
+import { dataStore } from "./utils/dataStore";
 
 export function App() {
-  // Application Data States
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [settings, setSettings] = useState<CafeSettings>({
-    cafeName: "Kanaf Cafe & Bakery",
-    tagline: "Taste Crafted With Care",
-    phone: "0543-692020",
-    internationalPhone: "+92543692020",
-    address: "Main Talagang Road, Chakwal, Pakistan",
-    googleLocation: "WRJJ+PQP, Talagang Hwy, Chakwal, Pakistan",
-    aryWhatsApp: "0333 6554090",
-    aryWhatsAppIntl: "+923336554090",
-    openingHours: "11:00 AM - 12:00 AM Daily",
-    deliveryMinOrder: 500,
-    deliveryFee: 100,
-  });
+  // Application Data States (pre-seeded so Vercel static deploys have all menu items immediately)
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(initialGallery);
+  const [settings, setSettings] = useState<CafeSettings>(initialSettings);
 
   // Cart State (stored in localStorage for persistence)
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -73,54 +63,87 @@ export function App() {
     }
   }, [cart]);
 
-  // Load Data from API
+  // Load Data from dataStore (local + remote sync)
   const loadData = async () => {
     try {
-      const [menuRes, galleryRes, settingsRes] = await Promise.all([
-        fetch("/api/menu"),
-        fetch("/api/gallery"),
-        fetch("/api/settings"),
+      const [menuData, galleryData, settingsData] = await Promise.all([
+        dataStore.getMenuData(),
+        dataStore.getGallery(),
+        dataStore.getSettings(),
       ]);
 
-      if (menuRes.ok) {
-        const menuData = await menuRes.json();
-        setCategories(menuData.categories || []);
-        setMenuItems(menuData.items || []);
-      }
-
-      if (galleryRes.ok) {
-        const galleryData = await galleryRes.json();
-        setGalleryItems(galleryData || []);
-      }
-
-      if (settingsRes.ok) {
-        const settingsData = await settingsRes.json();
-        setSettings((prev) => ({ ...prev, ...settingsData }));
-      }
+      if (menuData.categories?.length) setCategories(menuData.categories);
+      if (menuData.items?.length) setMenuItems(menuData.items);
+      if (galleryData?.length) setGalleryItems(galleryData);
+      if (settingsData) setSettings(settingsData);
     } catch (err) {
-      console.error("Failed to fetch store data:", err);
+      console.warn("Using local store data:", err);
     }
   };
 
   useEffect(() => {
     loadData();
+
+    // 1. Instant event listener for in-page updates (menu price changes, new recipes, new numbers)
+    const handleDataChanged = () => {
+      loadData();
+    };
+    window.addEventListener("kanaf_data_changed", handleDataChanged);
+
+    // 2. Storage event for cross-tab updates in the same browser
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key && e.key.startsWith("kanaf_")) {
+        loadData();
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+
+    // 3. BroadcastChannel for instant zero-latency cross-tab communication
+    let bc: BroadcastChannel | null = null;
+    if (typeof BroadcastChannel !== "undefined") {
+      try {
+        bc = new BroadcastChannel("kanaf_data_sync_channel");
+        bc.onmessage = () => {
+          loadData();
+        };
+      } catch (e) {}
+    }
+
+    // 4. Polling timer every 8 seconds to guarantee fresh data when live on any platform
+    const interval = setInterval(() => {
+      loadData();
+    }, 8000);
+
+    // 5. Re-check when window regains visibility / tab is brought back to front
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        loadData();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      window.removeEventListener("kanaf_data_changed", handleDataChanged);
+      window.removeEventListener("storage", handleStorage);
+      if (bc) bc.close();
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   // Verify staff session on mount if token exists
   useEffect(() => {
     if (staffToken) {
-      fetch("/api/staff/verify", {
-        headers: { Authorization: `Bearer ${staffToken}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.valid) {
+      dataStore
+        .verifyStaffToken(staffToken)
+        .then((valid) => {
+          if (!valid) {
             setStaffToken(null);
             sessionStorage.removeItem("kanaf_staff_token");
           }
         })
         .catch(() => {
-          setStaffToken(null);
+          // Keep session active on client
         });
     }
   }, [staffToken]);
@@ -196,12 +219,7 @@ export function App() {
   };
 
   const handleStaffLogout = () => {
-    if (staffToken) {
-      fetch("/api/staff/logout", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${staffToken}` },
-      }).catch(() => {});
-    }
+    dataStore.logoutStaff(staffToken);
     setStaffToken(null);
     sessionStorage.removeItem("kanaf_staff_token");
     setIsStaffDashboardOpen(false);
@@ -226,6 +244,7 @@ export function App() {
         onOpenCart={() => setIsCartOpen(true)}
         onNavigate={scrollToSection}
         activeSection={activeSection}
+        settings={settings}
         onOpenStaff={() => {
           if (staffToken) {
             setIsStaffDashboardOpen(true);
@@ -272,13 +291,14 @@ export function App() {
       <GallerySection galleryItems={galleryItems} />
 
       {/* 9. Location, Opening Hours & Google Map */}
-      <LocationSection />
+      <LocationSection settings={settings} />
 
       {/* 10. Call To Action Banner */}
-      <ContactCta onViewMenu={() => scrollToSection("menu")} />
+      <ContactCta onViewMenu={() => scrollToSection("menu")} settings={settings} />
 
       {/* 11. Footer with Discreet Staff Access */}
       <Footer
+        settings={settings}
         onNavigate={scrollToSection}
         onOpenStaffModal={() => {
           if (staffToken) {
@@ -294,6 +314,7 @@ export function App() {
         cartCount={cartTotalCount}
         onOpenCart={() => setIsCartOpen(true)}
         onViewMenu={() => scrollToSection("menu")}
+        settings={settings}
       />
 
       {/* Cart Drawer */}
@@ -313,6 +334,7 @@ export function App() {
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         items={cart}
+        settings={settings}
         onOrderSuccess={handleOrderSuccess}
       />
 

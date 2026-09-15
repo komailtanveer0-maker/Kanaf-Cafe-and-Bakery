@@ -1,17 +1,22 @@
 import React from "react";
 import { Utensils, Phone, ShoppingBag } from "lucide-react";
+import { CafeSettings } from "../types";
 
 interface MobileActionBarProps {
   cartCount: number;
   onOpenCart: () => void;
   onViewMenu: () => void;
+  settings?: CafeSettings;
 }
 
 export const MobileActionBar: React.FC<MobileActionBarProps> = ({
   cartCount,
   onOpenCart,
   onViewMenu,
+  settings,
 }) => {
+  const displayPhoneTel = settings?.internationalPhone || "+92543692020";
+
   return (
     <aside
       aria-label="Quick action bar"
@@ -31,7 +36,7 @@ export const MobileActionBar: React.FC<MobileActionBarProps> = ({
 
         {/* 2. CALL */}
         <a
-          href="tel:0543692020"
+          href={`tel:${displayPhoneTel.replace(/[^0-9+]/g, "")}`}
           className="flex flex-col items-center justify-center py-2 px-1 rounded-xl text-[#4A0817] hover:bg-[#5C0D20]/5 active:scale-95 transition-all"
         >
           <Phone className="w-4 h-4 text-[#5C0D20] mb-1" />

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Lock, X, KeyRound, AlertCircle, ArrowRight } from "lucide-react";
+import { dataStore } from "../utils/dataStore";
 
 interface StaffModalProps {
   isOpen: boolean;
@@ -29,21 +30,15 @@ export const StaffModal: React.FC<StaffModalProps> = ({
     setError(null);
 
     try {
-      const res = await fetch("/api/staff/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: pin.trim() }),
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success && data.token) {
+      const result = await dataStore.loginStaff(pin);
+      if (result.success && result.token) {
         setPin("");
-        onLoginSuccess(data.token);
+        onLoginSuccess(result.token);
       } else {
-        setError(data.error || "Incorrect Staff Access Code. Please try again.");
+        setError(result.error || "Incorrect Staff Access Code. Please try again.");
       }
     } catch (err: any) {
-      setError("Server connection error. Please try again.");
+      setError("Unable to verify PIN. Please try again.");
     } finally {
       setLoading(false);
     }

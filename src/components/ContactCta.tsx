@@ -1,13 +1,20 @@
 import React from "react";
 import { MessageCircle, Phone, Utensils, MapPin, Sparkles } from "lucide-react";
 import { ARY_SERVICES_PHONE_INTL } from "../utils/whatsapp";
+import { CafeSettings } from "../types";
 
 interface ContactCtaProps {
   onViewMenu: () => void;
+  settings?: CafeSettings;
 }
 
-export const ContactCta: React.FC<ContactCtaProps> = ({ onViewMenu }) => {
-  const directWhatsAppUrl = `https://wa.me/${ARY_SERVICES_PHONE_INTL}?text=${encodeURIComponent(
+export const ContactCta: React.FC<ContactCtaProps> = ({ onViewMenu, settings }) => {
+  const targetWhatsApp = settings?.aryWhatsAppIntl?.replace(/[^0-9]/g, "") || ARY_SERVICES_PHONE_INTL;
+  const displayPhone = settings?.phone || "0543-692020";
+  const displayPhoneTel = settings?.internationalPhone || "+92543692020";
+  const displayAddress = settings?.address || "Main Talagang Road, Chakwal";
+
+  const directWhatsAppUrl = `https://wa.me/${targetWhatsApp}?text=${encodeURIComponent(
     "Hello Kanaf Cafe & Bakery! I would like to place an order or inquire about your menu."
   )}`;
 
@@ -56,18 +63,18 @@ export const ContactCta: React.FC<ContactCtaProps> = ({ onViewMenu }) => {
         {/* Info badges */}
         <div className="pt-8 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-[#FAF7F2]/80 font-medium">
           <a
-            href="tel:0543692020"
+            href={`tel:${displayPhoneTel.replace(/[^0-9+]/g, "")}`}
             className="flex items-center gap-2 hover:text-white transition-colors"
           >
             <Phone className="w-4 h-4 text-[#D7E7F2]" />
-            <span>Phone: 0543-692020</span>
+            <span>Phone: {displayPhone}</span>
           </a>
 
           <div className="hidden sm:block w-1 h-1 rounded-full bg-white/40" />
 
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-[#D7E7F2]" />
-            <span>Main Talagang Road, Chakwal</span>
+            <span>{displayAddress}</span>
           </div>
         </div>
       </div>

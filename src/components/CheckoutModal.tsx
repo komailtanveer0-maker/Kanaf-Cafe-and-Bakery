@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { CartItem, CheckoutFormData } from "../types";
+import { CartItem, CheckoutFormData, CafeSettings } from "../types";
 import { formatPrice, generateWhatsAppOrderUrl, ARY_SERVICES_PHONE_DISPLAY } from "../utils/whatsapp";
+import { dataStore } from "../utils/dataStore";
 import { X, Send, CheckCircle2, AlertCircle, ShoppingBag, ShieldCheck } from "lucide-react";
 
 interface CheckoutModalProps {
@@ -8,6 +9,7 @@ interface CheckoutModalProps {
   onClose: () => void;
   items: CartItem[];
   onOrderSuccess: () => void;
+  settings?: CafeSettings;
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
@@ -15,6 +17,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClose,
   items,
   onOrderSuccess,
+  settings,
 }) => {
   const [formData, setFormData] = useState<CheckoutFormData>({
     customerName: "",
@@ -33,8 +36,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   if (!isOpen) return null;
 
   const subtotal = items.reduce((sum, ci) => sum + ci.item.price * ci.quantity, 0);
-  const deliveryFee = subtotal >= 1000 ? 0 : 100; // Free delivery over Rs. 1000
-  const total = subtotal + deliveryFee;
+  const deliveryFee = 0; // 100% Free Delivery in Chakwal
+  const total = subtotal;
 
   const validate = (): boolean => {
     const errs: { [key: string]: string } = {};
@@ -67,33 +70,31 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const generatedRef = `KNF-${Math.floor(1000 + Math.random() * 9000)}`;
     setOrderRef(generatedRef);
 
-    // Build URL for ARY Services WhatsApp (0333 6554090)
-    const whatsappUrl = generateWhatsAppOrderUrl(items, formData, deliveryFee, generatedRef);
+    const targetPhone = settings?.aryWhatsAppIntl || settings?.aryWhatsApp || ARY_SERVICES_PHONE_DISPLAY;
+
+    // Build URL for WhatsApp Dispatch
+    const whatsappUrl = generateWhatsAppOrderUrl(items, formData, deliveryFee, generatedRef, targetPhone);
     setCreatedWhatsAppUrl(whatsappUrl);
 
-    // Record order in backend server for store records
+    // Record order for store records (local + server sync)
     try {
-      await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: formData.customerName,
-          phone: formData.phone,
-          deliveryAddress: formData.deliveryAddress,
-          landmark: formData.landmark,
-          notes: formData.notes,
-          items: items.map((ci) => ({
-            id: ci.item.id,
-            name: ci.item.name,
-            price: ci.item.price,
-            quantity: ci.quantity,
-            specialNotes: ci.specialNotes || "",
-          })),
-          total,
-        }),
+      await dataStore.recordOrder({
+        customerName: formData.customerName,
+        phone: formData.phone,
+        deliveryAddress: formData.deliveryAddress,
+        landmark: formData.landmark,
+        notes: formData.notes,
+        items: items.map((ci) => ({
+          id: ci.item.id,
+          name: ci.item.name,
+          price: ci.item.price,
+          quantity: ci.quantity,
+          specialNotes: ci.specialNotes || "",
+        })),
+        total,
       });
     } catch (err) {
-      console.warn("Could not record order on server, proceeding with WhatsApp:", err);
+      console.warn("Could not record order:", err);
     }
 
     // Popup WhatsApp window directly
@@ -338,9 +339,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <span>Subtotal:</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Delivery Fee:</span>
-                    <span>{deliveryFee === 0 ? "FREE" : formatPrice(deliveryFee)}</span>
+                  <div className="flex justify-between text-emerald-700 font-semibold">
+                    <span>Delivery in Chakwal:</span>
+                    <span>FREE (Rs. 0)</span>
                   </div>
                   <div className="flex justify-between text-base font-bold text-[#4A0817] pt-2 border-t border-[#5C0D20]/15">
                     <span>Total:</span>
@@ -362,7 +363,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <div className="text-xs text-emerald-900 leading-relaxed">
                   <p className="font-bold text-sm">Dispatched via ARY SERVICES</p>
                   <p className="mt-0.5">
-                    Your order will be instantly transmitted to ARY Services (WhatsApp: {ARY_SERVICES_PHONE_DISPLAY}) with all items and customer details pre-filled.
+                    Your order will be instantly transmitted to ARY Services (WhatsApp: {settings?.aryWhatsApp || ARY_SERVICES_PHONE_DISPLAY}) with all items and customer details pre-filled.
                   </p>
                 </div>
               </div>
